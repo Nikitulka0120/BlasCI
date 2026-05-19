@@ -25,7 +25,7 @@ double geometric(const std::vector<double>& values) {
 }
 
 int main() {
-    const int size = 4200;
+    const int size = 500;
     const double alpha = 1.0;
     const int iterations = 10;
     std::vector<int> threads_list = {1, 2, 4, 8, 16};
