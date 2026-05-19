@@ -51,21 +51,26 @@ jobs:
           pytest -v tests/
 
   benchmark:
-    runs-on: ubuntu-latest
-    needs: build
+  runs-on: ubuntu-latest
+  needs: build
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Download benchmark binary
-        uses: actions/download-artifact@v4
-        with:
-          name: benchmark
+    - name: Install OpenBLAS runtime
+      run: |
+        sudo apt update
+        sudo apt install -y libopenblas-dev
 
-      - name: Make executable
-        run: chmod +x benchmark
+    - name: Download benchmark binary
+      uses: actions/download-artifact@v4
+      with:
+        name: benchmark
 
-      - name: Run performance test
-        run: |
-          ./benchmark
+    - name: Make executable
+      run: chmod +x benchmark
+
+    - name: Run performance test
+      run: |
+        ./benchmark
