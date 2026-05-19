@@ -1,12 +1,8 @@
 import ctypes
 import ctypes.util
 import numpy as np
-import pytest
+import pytestus
 
-
-# =========================
-# LOAD OPENBLAS (SYSTEM)
-# =========================
 def getLib():
     libname = ctypes.util.find_library("openblas")
 
@@ -21,10 +17,6 @@ def getLib():
 
 blas = getLib()
 
-
-# =========================
-# FUNCTION DEFINITIONS
-# =========================
 
 blasFunc = {
     "cblas_dnrm2": (ctypes.c_double, ctypes.c_double),
@@ -46,10 +38,6 @@ dotBlas = {
     "cblas_dsdot": (ctypes.c_double, ctypes.c_float),
 }
 
-
-# =========================
-# CONFIG FUNCTION
-# =========================
 def configBlas(name, restype, argtypes):
     try:
         func = getattr(blas, name)
@@ -59,10 +47,6 @@ def configBlas(name, restype, argtypes):
     except AttributeError:
         pytest.fail(f"Функция {name} отсутствует в OpenBLAS")
 
-
-# =========================
-# TEST 1: NORM / SUM
-# =========================
 @pytest.mark.parametrize("func_name", blasFunc.keys())
 def test_blas_basic(func_name):
     res_t, arg_t = blasFunc[func_name]
@@ -87,9 +71,6 @@ def test_blas_basic(func_name):
     assert result >= 0
 
 
-# =========================
-# TEST 2: DOT PRODUCTS
-# =========================
 @pytest.mark.parametrize("func_name", dotBlas.keys())
 def test_dot(func_name):
     res_t, arg_t = dotBlas[func_name]
@@ -115,10 +96,6 @@ def test_dot(func_name):
 
     assert result is not None
 
-
-# =========================
-# TEST 3: COMPLEX DOT
-# =========================
 @pytest.mark.parametrize("func_name", complexBlas.keys())
 def test_complex(func_name):
     base_arg_t, base_res_t = complexBlas[func_name]
@@ -149,9 +126,6 @@ def test_complex(func_name):
     assert np.any(result_buffer != 0)
 
 
-# =========================
-# TEST 4: SPECIAL CASE (SDSDOT)
-# =========================
 def test_sdsdot():
     blas_func = configBlas(
         "cblas_sdsdot",
